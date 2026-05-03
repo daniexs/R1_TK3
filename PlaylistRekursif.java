@@ -9,10 +9,12 @@ public class PlaylistRekursif {
   // fungsi rekursif buat mindahin urutan tampil lagu ke belakang dulu (mundur)
   //
   // tujuan fungsi:
-  //   nge-print info lagu dari index yang diminta sampe ke index 0, jadi yang tampil kebalik urutan maju biasa
+  // nge-print info lagu dari index yang diminta sampe ke index 0, jadi yang
+  // tampil kebalik urutan maju biasa
 
   // base case:
-  //  kalo index udah < 0 artinya ga ada lagu lagi yang valid, langsung stop (return)
+  // kalo index udah < 0 artinya ga ada lagu lagi yang valid, langsung stop
+  // (return)
 
   // recursive case:
   // cetak lagu di list[index], abis itu panggil lagi tampilkanMundur dengan
@@ -31,15 +33,11 @@ public class PlaylistRekursif {
     tampilkanMundur(list, index - 1);
   }
 
-  static double totalDurasi(Lagu[] list, int limit) {
-    double total = 0;
-    for (int u = 0; u < list.length; u++) {
-      total += list[u].getDurasi();
-      if ((u + 1) == limit) {
-        break;
-      }
+  static double totalDurasi(Lagu[] list, int n) {
+    if ((n - 1) < 0) {
+      return 0;
     }
-    return total;
+    return list[n - 1].getDurasi() + totalDurasi(list, n - 1);
   }
 
   static double ukurWaktuTampilkanMundur(Lagu[] list, int n) {
@@ -60,7 +58,7 @@ public class PlaylistRekursif {
     System.setOut(new PrintStream(new ByteArrayOutputStream()));
     try {
       long mulai = System.nanoTime();
-      totalDurasi(list, n);
+      double total = totalDurasi(list, n);
       long selesai = System.nanoTime();
       return (selesai - mulai) / 1_000_000.0;
     } finally {
