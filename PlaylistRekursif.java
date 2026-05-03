@@ -66,6 +66,28 @@ public class PlaylistRekursif {
     }
   }
 
+  static double cariDurasiTerpanjang(Lagu[] list, int index) {
+    if (index < 0) {
+      return 0;
+    }
+    double maxSebelumnya = cariDurasiTerpanjang(list, index - 1);
+    return Math.max(list[index].getDurasi(), maxSebelumnya);
+  }
+
+  // Fungsi pengukuran waktu eksekusi
+  static double ukurWaktuCariDurasiTerpanjang(Lagu[] list, int n) {
+    PrintStream asli = System.out;
+    System.setOut(new PrintStream(new ByteArrayOutputStream()));
+    try {
+      long mulai = System.nanoTime();
+      double maxDurasi = cariDurasiTerpanjang(list, n - 1);
+      long selesai = System.nanoTime();
+      return (selesai - mulai) / 1_000_000.0; // konversi ke ms
+    } finally {
+      System.setOut(asli);
+    }
+  }
+
   public static void main(String[] args) {
 
     // inisialisasi 10 lagu
@@ -94,8 +116,8 @@ public class PlaylistRekursif {
 
     tampilkanMundur(playlist, playlist.length - 1);
     // fungsi cariDurasiTerpanjang
-    System.out.println("Lagu terpanjang: ");
-    System.out.println();
+    double maxDurasiSemua = cariDurasiTerpanjang(playlist, playlist.length - 1);
+    System.out.printf("\nDurasi terpanjang semua lagu = %.2f menit\n", maxDurasiSemua);
 
     System.out.println("\nExecution Time (tampilkanMundur): ");
     int[] ukuranN = { 3, 5, 10 };
@@ -108,6 +130,12 @@ public class PlaylistRekursif {
     for (int n : ukuranN) {
       double ms = ukurWaktuTotalDurasi(playlist, n);
       System.out.printf("n = %d lagu -> %.6f ms%n", n, ms);
+    }
+
+    System.out.println("\nExecution Time (cariDurasiTerpanjang): ");
+    for (int n : ukuranN) {
+      double waktu = ukurWaktuCariDurasiTerpanjang(playlist, n);
+      System.out.printf("n = %2d lagu -> Waktu: %.6f ms%n", n, waktu);
     }
   }
 }
