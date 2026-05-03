@@ -1,8 +1,45 @@
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class PlaylistRekursif {
 
   // atribut playlist
   static Lagu[] playlist;
+
+  // fungsi rekursif buat mindahin urutan tampil lagu ke belakang dulu (mundur)
+  //
+  // tujuan fungsi:
+  //   nge-print info lagu dari index yang diminta sampe ke index 0, jadi yang tampil kebalik urutan maju biasa
+  //
+  // base case:
+  //   kalo index udah < 0 artinya ga ada lagu lagi yang valid, langsung stop (return)
+  //
+  // recursive case:
+  //   cetak lagu di list[index], abis itu panggil lagi tampilkanMundur dengan index-1
+  //
+  // kompleksitas:
+  //   waktu O(n) -- n disini banyaknya lagu yang dicetak (sejajar sama index awal + 1)
+  //   ruang O(n) juga karena tiap panggilan rekursif nyimpen stack frame sampe semuanya selesai
+  static void tampilkanMundur(Lagu[] list, int index) {
+    if (index < 0) {
+      return;
+    }
+    list[index].tampilkanInfo();
+    tampilkanMundur(list, index - 1);
+  }
+
+  static double ukurWaktuTampilkanMundur(Lagu[] list, int n) {
+    PrintStream asli = System.out;
+    System.setOut(new PrintStream(new ByteArrayOutputStream()));
+    try {
+      long mulai = System.nanoTime();
+      tampilkanMundur(list, n - 1);
+      long selesai = System.nanoTime();
+      return (selesai - mulai) / 1_000_000.0;
+    } finally {
+      System.setOut(asli);
+    }
+  }
 
   public static void main(String[] args) {
 
@@ -24,22 +61,22 @@ public class PlaylistRekursif {
     System.out.println("Jumlah lagu: " + playlist.length);
 
     // fungsi totalDurasi
-    System.out.println("Total durasi: ");
+    System.out.println("Total durasi = ");
 
+    System.out.println();
+    System.out.println("Daftar lagu (Terbalik):");
+
+    tampilkanMundur(playlist, playlist.length - 1);
     // fungsi cariDurasiTerpanjang
     System.out.println("Lagu terpanjang: ");
     System.out.println();
 
-    // ganti loop dengan fungsi tampilkanMundur
-    for (int i = 0; i < playlist.length; i++) {
-      System.out.print((i + 1) + ". ");
-      playlist[i].tampilkanInfo();
+
+    System.out.println("\nExecution Time (tampilkanMundur): ");
+    int[] ukuranN = { 3, 5, 10 };
+    for (int n : ukuranN) {
+      double ms = ukurWaktuTampilkanMundur(playlist, n);
+      System.out.printf("n = %d lagu -> %.6f ms%n", n, ms);
     }
-
-    // fungsi rekursif
-    System.out.println("\nExecution Time (totalDurasi): " + " ms");
-    System.out.println("Execution Time (tampilkanMundur): " + " ms");
-    System.out.println("Execution Time (cariDurasiTerpanjang): " + " ms");
-
   }
 }
